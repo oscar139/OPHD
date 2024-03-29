@@ -8,18 +8,22 @@
 
 KeyboardInputHandler::KeyboardInputHandler(MapView& mapView) :
 	mMapView(mapView)
-{};
+{
+};
 
 
 void KeyboardInputHandler::handleInput(NAS2D::EventHandler::KeyCode key, NAS2D::EventHandler::KeyModifier mod){
 	const int shiftMoveScalar = NAS2D::EventHandler::shift(mod) ? 5 : 1;
+	mMoveScalar = shiftMoveScalar;
 
 	switch (key)
 	{
 
 	case NAS2D::EventHandler::KeyCode::KEY_w:
+		mWKey_->execute();
+		break;
 	case NAS2D::EventHandler::KeyCode::KEY_UP:
-		mMapView.moveView(MapOffset{DirectionNorthWest * shiftMoveScalar, 0});
+		mUpKey_->execute();
 		break;
 
 	case NAS2D::EventHandler::KeyCode::KEY_s:
