@@ -9,9 +9,9 @@
 class KeyboardInputHandler
 {
 public:
-	KeyboardInputHandler(std::unique_ptr<MapView> mapView);
+	KeyboardInputHandler(MapView& mapView);
 	void handleInput(NAS2D::EventHandler::KeyCode key, NAS2D::EventHandler::KeyModifier mod);
 
 private:
-	std::unique_ptr<MapView> mMapView;
+	MapView& mMapView;
 };
