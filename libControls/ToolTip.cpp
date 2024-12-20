@@ -42,7 +42,20 @@ void ToolTip::add(Control& c, const std::string& str)
 
 void ToolTip::buildDrawParams(std::pair<Control*, std::string>& item, int mouseX)
 {
-	const auto toolTipSize = mFont.size(item.second) + PaddingSize * 2;
+	const auto toolTipLineHeight = mFont.height();
+	const int numberOfLines = std::count(item.second.begin(), item.second.end(), '\n') + 1;
+	const auto toolTipHeight = toolTipLineHeight * numberOfLines + PaddingSize.y * 2;
+
+	std::istringstream stream(item.second);
+	std::string line;
+	int maxWidth = 0;
+	while (std::getline(stream, line, '\n'))
+	{
+		maxWidth = std::max(maxWidth, mFont.size(line).x);
+	}
+	const auto toolTipWidth = maxWidth + PaddingSize.x * 2;
+
+	const auto toolTipSize = NAS2D::Vector<int>{toolTipWidth, toolTipHeight};
 
 	auto tooltipPosition = item.first->position();
 
@@ -102,6 +115,14 @@ void ToolTip::draw() const
 		auto& renderer = NAS2D::Utility<NAS2D::Renderer>::get();
 		renderer.drawBoxFilled(rect(), NAS2D::Color::DarkGray);
 		renderer.drawBox(rect(), NAS2D::Color::Black);
-		renderer.drawText(mFont, mFocusedControl->second, position() + PaddingSize);
+
+		std::istringstream stream(mFocusedControl->second);
+		std::string line;
+		auto linePosition = position() + PaddingSize;
+		while (std::getline(stream, line, '\n'))
+		{
+			renderer.drawText(mFont, line, linePosition);
+			linePosition.y += mFont.height();
+		}
 	}
 }
